@@ -21,7 +21,6 @@ wp_enqueue_script( 'mbr_bootstrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/4.1.
 wp_enqueue_script( 'mbr_jquery_js', '//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js' );
 wp_enqueue_script( 'mbr_popper_js', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' );
 wp_enqueue_script( 'mbr_custom_js', plugins_url( '/js/mbr.js', __FILE__ ));
-wp_enqueue_script( 'mbr_ace_js', plugins_url( '/plugin/ace/src/ace.js', __FILE__ ));
 
 // Create database table mbr_function_control for plugin
 register_activation_hook( __FILE__, 'my_plugin_create_db' );
@@ -250,5 +249,33 @@ function mbr_main_function(){
     </div>
 <?php
 }
+}
+
+if( !function_exists("mbr_sync_file") ){
+    function mbr_sync_file(){
+        global $wpdb;
+        $table_name = $wpdb->prefix . "mbr_function_control";
+
+?>
+    <div class="container">
+        <div class="row py-4">
+            <div class="col text-center">
+                <h3>MBR functions control v1.0</h3>
+                <h4><i>Sync file to database</i></h4>
+            </div>
+        </div>
+        <div class="row">
+			<div class="col alert alert-danger">
+				<h5> Bạn cần tách biệt 2 function bằng 2 dòng trống!</h5>
+			</div>
+        </div>
+        <div class="row">
+            <form method='post' action='<?php echo plugins_url('includes/sync_file.php', __FILE__ ); ?>' class='form-container'>
+                <input type='submit' class='btn btn-success mx-2 fa mbr-fa' name='sync_file' value='&#xf021; Đồng bộ'>                
+            </form>
+        </div>
+    </div>
+<?php
+    }
 }
 ?>
