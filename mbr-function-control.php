@@ -33,6 +33,8 @@ global $wpdb;
     $sql = "CREATE TABLE $table_name (
     id mediumint(9) NOT NULL AUTO_INCREMENT,
     status boolean NOT NULL,
+    open boolean NOT NULL,
+    same boolean NOT NULL,
     title text NOT NULL,
     content text NOT NULL,
     PRIMARY KEY  (id)
@@ -43,24 +45,11 @@ global $wpdb;
 }
 
 // Add plugin to admin menu bar
-add_action( 'admin_menu', 'extra_post_info_menu' );
-if( !function_exists("extra_post_info_menu") ){
-    function extra_post_info_menu(){
-        $page_title = 'MBR functions control';
-        $menu_title = 'MBR functions control';
-        $capability = 'manage_options';
-        $menu_slug  = 'extra-post-info';
-        $function   = 'extra_post_info_page';
-        $icon_url   = 'dashicons-media-code';
-        $position   = 99;
-
-        add_menu_page( $page_title,
-                       $menu_title, 
-                       $capability, 
-                       $menu_slug, 
-                       $function, 
-                       $icon_url, 
-                       $position );
+add_action( 'admin_menu', 'mbr_add_menu_bar' );
+if( !function_exists("mbr_add_menu_bar") ){
+    function mbr_add_menu_bar(){
+        add_menu_page( 'MBR functions control', 'MBR functions control', 'manage_options', 'mbr-functions-control', 'mbr_main_function', 'dashicons-media-code', '99' );
+        add_submenu_page( 'mbr-functions-control', 'Sync file', 'Sync file funtions.php', 'manage_options', 'sync-file', 'mbr_sync_file');
     }
 }
     
@@ -71,9 +60,9 @@ function getStringBetween($str,$from,$to)
     return substr($sub,0,strpos($sub,$to));
 }
 
-if( !function_exists("extra_post_info_page") )
+if( !function_exists("mbr_main_function") )
 {
-function extra_post_info_page(){
+function mbr_main_function(){
     global $wpdb;
     $table_name = $wpdb->prefix . "mbr_function_control";
     $all_functions = $wpdb->get_results( "SELECT * FROM $table_name" );
