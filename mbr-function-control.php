@@ -113,6 +113,7 @@ function mbr_main_function(){
             else {
                 $arr_function_get_file = explode($mbr_title1, $function_file);
                 $function_get_file = $arr_function_get_file[1];
+                $function_get_file = preg_replace('/\n.+$/', '', $function_get_file);
                 $function_get_file2 = esc_html(preg_replace('/\s*/m','',$function_get_file));
             }
         ?>
@@ -265,9 +266,9 @@ if( !function_exists("mbr_sync_file") ){
             </div>
         </div>
         <div class="row">
-			<div class="col alert alert-danger">
-				<h5> Bạn cần tách biệt 2 function bằng 2 dòng trống!</h5>
-			</div>
+            <div class="col alert alert-danger">
+                <h5> Bạn cần tách biệt 2 function bằng 2 dòng trống!</h5>
+            </div>
         </div>
         <div class="row">
             <form method='post' action='<?php echo plugins_url('includes/sync_file.php', __FILE__ ); ?>' class='form-container'>
