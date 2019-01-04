@@ -25,7 +25,7 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: "/wp-content/plugins/mbr-function-control/includes/on-off.php",
+            url: "/wp-content/plugins/mbr-functions-control/includes/on-off.php",
             data: data,
         }).done(function(data) {
 //      console.log(data);
@@ -40,10 +40,10 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: "/wp-content/plugins/mbr-function-control/includes/on-off.php",
+            url: "/wp-content/plugins/mbr-functions-control/includes/on-off.php",
             data: data,
         }).done(function(data) {
-//      console.log(functionid);
+      console.log(functionid);
         });
     });
 
