@@ -113,7 +113,6 @@ function mbr_main_function(){
             else {
                 $arr_function_get_file = explode($mbr_title1, $function_file);
                 $function_get_file = $arr_function_get_file[1];
-                $function_get_file = preg_replace('/\n.+$/', '', $function_get_file);
                 $function_get_file2 = esc_html(preg_replace('/\s*/m','',$function_get_file));
             }
         ?>
@@ -267,7 +266,12 @@ if( !function_exists("mbr_sync_file") ){
         </div>
         <div class="row">
             <div class="col alert alert-danger">
-                <h5> Bạn cần tách biệt 2 function bằng 2 dòng trống!</h5>
+                <h5><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> LƯU Ý QUAN TRỌNG:</h5>
+                <ul>
+                    <li>- Bạn cần tách biệt 2 function bằng 2 dòng trống!</li>
+                    <li>- Trong 1 function không được phép cách nhau 2 dòng trống.</li>
+                    <li>- File functions.php cũ sẽ được đổi tên thành functions.php.mbr_bak và plugin sẽ tự tạo ra 1 file funtions.php mới chứa các funtion của bạn trong đó.</li>
+                </ul>
             </div>
         </div>
         <div class="row">
