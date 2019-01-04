@@ -80,6 +80,7 @@ if(isset($_POST['delete_function'])){
     $old_function_content = preg_replace('/(\r\n|\r|\n)/s',"\n",$old_function_content);
     $mbr_str = str_replace($old_function_content, '', $mbr_str);
     $mbr_str = trim(str_replace("\n\n\n", "\n\n", $mbr_str));
+    $mbr_str = $mbr_str . PHP_EOL;
     fwrite($mbr_fp,$mbr_str,strlen($mbr_str));
     fclose($mbr_fp);
 }
