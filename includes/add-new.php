@@ -2,7 +2,7 @@
 //error_reporting(E_ALL);
 //ini_set('display_errors', 1);
 require('../../../../wp-load.php');
-header("Location: /wp-admin/admin.php?page=extra-post-info");
+header("Location: /wp-admin/admin.php?page=mbr-functions-control");
 
 global $wpdb;
 
