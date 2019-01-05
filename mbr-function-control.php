@@ -236,8 +236,8 @@ function mbr_main_function(){
                                 </div>
                             </div>
                             <div class='modal-footer mb-0'>
-                                <input type='submit' class='btn btn-success' value='Thêm mới'>
-                                <button type='button' class='btn btn-danger' data-dismiss='modal'>Hủy bỏ</button>
+                                <input type='submit' class='btn btn-success fa mbr-fa' value='&#xf055; Thêm mới'>
+                                <button type='button' class='btn btn-danger' data-dismiss='modal'><i class="fa fa-times-circle" aria-hidden="true"></i> Hủy bỏ</button>
                             </div>
                         </form>
                     </div>
