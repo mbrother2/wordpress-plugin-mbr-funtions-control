@@ -25,7 +25,7 @@ wp_enqueue_script( 'mbr_custom_js', plugins_url( '/js/mbr.js', __FILE__ ));
 // Create database table mbr_function_control for plugin
 register_activation_hook( __FILE__, 'my_plugin_create_db' );
 function my_plugin_create_db() {
-global $wpdb;
+    global $wpdb;
     $table_name = $wpdb->prefix . "mbr_function_control"; 
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -52,13 +52,22 @@ if( !function_exists("mbr_add_menu_bar") ){
     }
 }
     
-// Main Plugin
 function getStringBetween($str,$from,$to)
 {
     $sub = substr($str, strpos($str,$from)+strlen($from),strlen($str));
     return substr($sub,0,strpos($sub,$to));
 }
 
+function function_disable($funct_db, $funct_file){
+    if($funct_db != $funct_file){
+        echo disabled;
+    }
+    else {
+        echo "";
+    }
+}
+
+// Main Plugin
 if( !function_exists("mbr_main_function") )
 {
 function mbr_main_function(){
@@ -100,11 +109,16 @@ function mbr_main_function(){
         </div>
 
         <?php foreach($all_functions as $row){
+            $function_id = $row->id;
+            $function_status = $row->status;
+            $function_open = $row->open;
+            $function_title = $row->title;
+            $function_content = $row->content;
             $function_file = file_get_contents(get_stylesheet_directory() . '/functions.php');
-            $function_next_id = $wpdb->get_var( "SELECT id FROM $table_name WHERE id > $row->id ORDER BY id ASC LIMIT 1" );
-            $mbr_title1 = '// ' . $wpdb->get_var( "SELECT title FROM $table_name WHERE ID = $row->id" );
+            $function_next_id = $wpdb->get_var( "SELECT id FROM $table_name WHERE id > $function_id ORDER BY id ASC LIMIT 1" );
+            $mbr_title1 = '// ' . $function_title;
             $mbr_title2 = '// ' . $wpdb->get_var( "SELECT title FROM $table_name WHERE ID = $function_next_id" );
-            $function_get_db = $wpdb->get_var( "SELECT content FROM $table_name WHERE ID = $row->id" );
+            $function_get_db = $row->content;
             $function_get_db = esc_html(preg_replace('/\s*/m','',$function_get_db));
             if($function_next_id != NULL){
                 $function_get_file = getStringBetween($function_file, $mbr_title1, $mbr_title2);
@@ -115,13 +129,14 @@ function mbr_main_function(){
                 $function_get_file = $arr_function_get_file[1];
                 $function_get_file = esc_html(preg_replace('/\s*/m','',$function_get_file));
             }
-            if($row->status == 1){
-                $show_function_content = $row->content;
+            if($function_status == 1){
+                $show_function_content = $function_content;
             }
             else {
-                $show_function_content = str_replace(array('**/' . PHP_EOL . '/*', '*/' . PHP_EOL . '/*'), array('/*','*/'), $row->content);
+                $show_function_content = str_replace(array('**/' . PHP_EOL . '/*', '*/' . PHP_EOL . '/*'), array('/*','*/'), $function_content);
                 $show_function_content = preg_replace(array('/^.+\n/','/\n.+$/'), '', $show_function_content);
             }
+
         ?>
         <div class="row">
             <div class="col py-4">
@@ -132,7 +147,7 @@ function mbr_main_function(){
                             'same'  => 0
                         ),
                         array(
-                            'id' => $row->id
+                            'id' => $function_id
                         )
                     );
                 ?>
@@ -140,7 +155,7 @@ function mbr_main_function(){
                     <div class="col-12 py-0 alert alert-danger">
                         <form class="mb-2" method='post' action='<?php echo plugins_url( 'includes/update.php', __FILE__ ); ?>'>
                             <div class="form-group row p-0 m-0">
-                                <input type='hidden' name='function_id' value='<?php echo $row->id ?>'>
+                                <input type='hidden' name='function_id' value='<?php echo $function_id ?>'>
 <!--                                <input type='hidden' name='new_function_content' value='<?php echo stripslashes(esc_html($function_get_file)); ?>'> -->
                                 <div class="col-sm-10 mt-3">
                                     <h5><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Dữ liệu trong file functions.php không giống với trong cơ sở dữ liệu!</h5>
@@ -156,32 +171,32 @@ function mbr_main_function(){
                 <div class="row">
                     <div class="col-2 col-sm-1 pr-0 mr-0">
                         <label class="switch">
-                            <input <?php if($function_get_db != $function_get_file){ echo disabled; }?> id="<?php echo $row->id;?>" type="checkbox" <?php if($row->status == 1){ echo checked;}?> name="colorCheckbox" value="<?php echo $row->id;?>">
+                            <input <?php function_disable($function_get_db, $function_get_file);?> id="<?php echo $function_id;?>" type="checkbox" <?php if($function_status == 1){ echo checked;}?> name="colorCheckbox" value="<?php echo $function_id;?>">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="col-10 col-sm-11 pl-0">
-                        <div class="accordion w-100 mbr_open_accordion" id="mbr_accordion<?php echo $row->id;?>">
-                            <div data-toggle="collapse" data-target="#mbr_collapse<?php echo $row->id;?>">
-                                <h4 class="mbr_accordion <?php if($function_get_db != $function_get_file){ echo disabled; }?>" ><?php echo $row->title ?></h4>
+                        <div class="accordion w-100 mbr_open_accordion" id="mbr_accordion<?php echo $function_id;?>">
+                            <div data-toggle="collapse" data-target="#mbr_collapse<?php echo $function_id;?>">
+                                <h4 class="mbr_accordion <?php function_disable($function_get_db, $function_get_file);?>" ><?php echo $function_title ?></h4>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div id="mbr_collapse<?php echo $row->id;?>" class="collapse <?php if($row->open == 1){?> show <?php } ?> w-100" aria-labelledby="hostvn_heading" data-parent="#mbr_accordion<?php echo $row->id;?>">
-                            <?php if($row->status == 1){ ?>
-                            <div class="<?php echo $row->id;?>">
+                        <div id="mbr_collapse<?php echo $function_id;?>" class="collapse <?php if($function_open == 1){?> show <?php } ?> w-100" aria-labelledby="hostvn_heading" data-parent="#mbr_accordion<?php echo $function_id;?>">
+                            <?php if($function_status == 1){ ?>
+                            <div class="<?php echo $function_id;?>">
                             <?php } else { ?>
-                            <div class="<?php echo $row->id;?>" style="display: none;">
+                            <div class="<?php echo $function_id;?>" style="display: none;">
                             <?php } ?>
                                 <form method='post' action='<?php echo plugins_url( 'includes/update.php', __FILE__ ); ?>'>
-                                    <input type='hidden' name='function_title' value='<?php echo $row->title ?>'>
-                                    <input type='hidden' name='function_id' value='<?php echo $row->id ?>'>
-                                    <textarea <?php if($function_get_db != $function_get_file){ echo disabled; }?> class="form-control py-3" name="new_function_content" rows="5"><?php echo esc_html($show_function_content); ?></textarea>
-                                    <input <?php if($function_get_db != $function_get_file){ echo disabled; }?> type='submit' class='btn btn-warning fa mbr-fa mt-2' name='update_function' value='&#xf0aa; Cập nhật'>
-                                    <button <?php if($function_get_db != $function_get_file){ echo disabled; }?> type='button' class='btn btn-danger ml-2 mt-2 showmodal' data-toggle='modal' data-target='#ask_delete' data-functioncontent="<?php echo esc_html($row->content); ?>" data-functiontitle="<?php echo esc_html($row->title) ?>" data-functionid="<?php echo $row->id; ?>"><i class="fa fa-times-circle" aria-hidden="true"></i> Xóa</button>
+                                    <input type='hidden' name='function_title' value='<?php echo $function_title ?>'>
+                                    <input type='hidden' name='function_id' value='<?php echo $function_id ?>'>
+                                    <textarea <?php function_disable($function_get_db, $function_get_file);?> class="form-control py-3" name="new_function_content" rows="5"><?php echo esc_html($show_function_content); ?></textarea>
+                                    <input <?php function_disable($function_get_db, $function_get_file);?> type='submit' class='btn btn-warning fa mbr-fa mt-2' name='update_function' value='&#xf0aa; Cập nhật'>
+                                    <button <?php function_disable($function_get_db, $function_get_file);?> type='button' class='btn btn-danger ml-2 mt-2 showmodal' data-toggle='modal' data-target='#ask_delete' data-functioncontent="<?php echo esc_html($function_content); ?>" data-functiontitle="<?php echo esc_html($function_title) ?>" data-functionid="<?php echo $function_id; ?>"><i class="fa fa-times-circle" aria-hidden="true"></i> Xóa</button>
                                 </form>
                             </div>
                         </div>
@@ -209,8 +224,8 @@ function mbr_main_function(){
                     <div class='modal-body'>
                         <form method='post' action='<?php echo plugins_url( 'includes/add-new.php', __FILE__ ); ?>'>
                             <div class="form-group mx-0 row border rounded">
-                                <input type='hidden' name='function_title' value='<?php echo $row->title ?>'>
-                                <input type='hidden' name='function_id' value='<?php echo $row->id ?>'>
+                                <input type='hidden' name='function_title' value='<?php echo $function_title ?>'>
+                                <input type='hidden' name='function_id' value='<?php echo $function_id ?>'>
                                 <label class="col-sm-2 col-form-label bg-light border-right border-bottom text-truncate">Tên function</label>
                                 <div class="col-sm-10 border-bottom px-2">
                                     <input type="text" class="form-control border-0" name="input1" id="input1">
@@ -258,6 +273,7 @@ function mbr_main_function(){
 }
 }
 
+// Function sync file
 if( !function_exists("mbr_sync_file") ){
     function mbr_sync_file(){
         global $wpdb;
