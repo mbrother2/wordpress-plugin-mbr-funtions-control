@@ -105,20 +105,27 @@ function mbr_main_function(){
             $mbr_title1 = '// ' . $wpdb->get_var( "SELECT title FROM $table_name WHERE ID = $row->id" );
             $mbr_title2 = '// ' . $wpdb->get_var( "SELECT title FROM $table_name WHERE ID = $function_next_id" );
             $function_get_db = $wpdb->get_var( "SELECT content FROM $table_name WHERE ID = $row->id" );
-            $function_get_db2 = esc_html(preg_replace('/\s*/m','',$function_get_db));
+            $function_get_db = esc_html(preg_replace('/\s*/m','',$function_get_db));
             if($function_next_id != NULL){
                 $function_get_file = getStringBetween($function_file, $mbr_title1, $mbr_title2);
-                $function_get_file2 = esc_html(preg_replace('/\s*/m','',$function_get_file));
+                $function_get_file = esc_html(preg_replace('/\s*/m','',$function_get_file));
             }
             else {
                 $arr_function_get_file = explode($mbr_title1, $function_file);
                 $function_get_file = $arr_function_get_file[1];
-                $function_get_file2 = esc_html(preg_replace('/\s*/m','',$function_get_file));
+                $function_get_file = esc_html(preg_replace('/\s*/m','',$function_get_file));
+            }
+            if($row->status == 1){
+                $show_function_content = $row->content;
+            }
+            else {
+                $show_function_content = str_replace(array('**/' . PHP_EOL . '/*', '*/' . PHP_EOL . '/*'), array('/*','*/'), $row->content);
+                $show_function_content = preg_replace(array('/^.+\n/','/\n.+$/'), '', $show_function_content);
             }
         ?>
         <div class="row">
             <div class="col py-4">
-                <?php if($function_get_db2 != $function_get_file2){ 
+                <?php if($function_get_db != $function_get_file){ 
                     $wpdb->update( 
                         $table_name, 
                         array(
@@ -149,14 +156,14 @@ function mbr_main_function(){
                 <div class="row">
                     <div class="col-2 col-sm-1 pr-0 mr-0">
                         <label class="switch">
-                            <input <?php if($function_get_db2 != $function_get_file2){ echo disabled; }?> id="<?php echo $row->id;?>" type="checkbox" <?php if($row->status == 1){ echo checked;}?> name="colorCheckbox" value="<?php echo $row->id;?>">
+                            <input <?php if($function_get_db != $function_get_file){ echo disabled; }?> id="<?php echo $row->id;?>" type="checkbox" <?php if($row->status == 1){ echo checked;}?> name="colorCheckbox" value="<?php echo $row->id;?>">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="col-10 col-sm-11 pl-0">
                         <div class="accordion w-100 mbr_open_accordion" id="mbr_accordion<?php echo $row->id;?>">
                             <div data-toggle="collapse" data-target="#mbr_collapse<?php echo $row->id;?>">
-                                <h4 class="mbr_accordion <?php if($function_get_db2 != $function_get_file2){ echo disabled; }?>" ><?php echo $row->title ?></h4>
+                                <h4 class="mbr_accordion <?php if($function_get_db != $function_get_file){ echo disabled; }?>" ><?php echo $row->title ?></h4>
                             </div>
                         </div>
                     </div>
@@ -172,9 +179,9 @@ function mbr_main_function(){
                                 <form method='post' action='<?php echo plugins_url( 'includes/update.php', __FILE__ ); ?>'>
                                     <input type='hidden' name='function_title' value='<?php echo $row->title ?>'>
                                     <input type='hidden' name='function_id' value='<?php echo $row->id ?>'>
-                                    <textarea <?php if($function_get_db2 != $function_get_file2){ echo disabled; }?> class="form-control py-3" name="new_function_content" rows="5"><?php echo esc_html($row->content); ?></textarea>
-                                    <input <?php if($function_get_db2 != $function_get_file2){ echo disabled; }?> type='submit' class='btn btn-warning fa mbr-fa mt-2' name='update_function' value='&#xf0aa; Cập nhật'>
-                                    <button <?php if($function_get_db2 != $function_get_file2){ echo disabled; }?> type='button' class='btn btn-danger ml-2 mt-2 showmodal' data-toggle='modal' data-target='#ask_delete' data-functioncontent="<?php echo esc_html($row->content); ?>" data-functiontitle="<?php echo esc_html($row->title) ?>" data-functionid="<?php echo $row->id; ?>"><i class="fa fa-times-circle" aria-hidden="true"></i> Xóa</button>
+                                    <textarea <?php if($function_get_db != $function_get_file){ echo disabled; }?> class="form-control py-3" name="new_function_content" rows="5"><?php echo esc_html($show_function_content); ?></textarea>
+                                    <input <?php if($function_get_db != $function_get_file){ echo disabled; }?> type='submit' class='btn btn-warning fa mbr-fa mt-2' name='update_function' value='&#xf0aa; Cập nhật'>
+                                    <button <?php if($function_get_db != $function_get_file){ echo disabled; }?> type='button' class='btn btn-danger ml-2 mt-2 showmodal' data-toggle='modal' data-target='#ask_delete' data-functioncontent="<?php echo esc_html($row->content); ?>" data-functiontitle="<?php echo esc_html($row->title) ?>" data-functionid="<?php echo $row->id; ?>"><i class="fa fa-times-circle" aria-hidden="true"></i> Xóa</button>
                                 </form>
                             </div>
                         </div>
