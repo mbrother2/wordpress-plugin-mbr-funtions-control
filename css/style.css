@@ -91,7 +91,7 @@ input#mbr_inactive_function {
 }
 
 h4.mbr_accordion.disabled {
-    opacity: 0.65;
+    text-decoration: line-through;
 }
 
 #editor {
