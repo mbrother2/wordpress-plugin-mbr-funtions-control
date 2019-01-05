@@ -14,12 +14,12 @@
 defined( 'ABSPATH' ) or die( 'Nope, not accessing this' );
 
 // Add CSS and JS
-wp_enqueue_style( 'mbr_bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' );
-wp_enqueue_style( 'mbr_fontawesome_css', '//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
+wp_enqueue_style( 'mbr_bootstrap_css', plugins_url( '/css/bootstrap.min.css', __FILE__ ));
+wp_enqueue_style( 'mbr_fontawesome_css', plugins_url( '/css/font-awesome.min.css', __FILE__ ));
 wp_enqueue_style( 'mbr_custom_css', plugins_url( '/css/style.css', __FILE__ ));
-wp_enqueue_script( 'mbr_bootstrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' );
-wp_enqueue_script( 'mbr_jquery_js', '//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js' );
-wp_enqueue_script( 'mbr_popper_js', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' );
+wp_enqueue_script( 'mbr_bootstrap_js', plugins_url( '/js/bootstrap.min.js', __FILE__ ));
+wp_enqueue_script( 'mbr_jquery_js', plugins_url( '/js/jquery.min.js', __FILE__ ));
+wp_enqueue_script( 'mbr_popper_js', plugins_url( '/js/popper.min.js', __FILE__ ));
 wp_enqueue_script( 'mbr_custom_js', plugins_url( '/js/mbr.js', __FILE__ ));
 
 // Create database table mbr_function_control for plugin
