@@ -13,14 +13,19 @@
 
 defined( 'ABSPATH' ) or die( 'Nope, not accessing this' );
 
-// Add CSS and JS
-wp_enqueue_style( 'mbr_bootstrap_css', plugins_url( '/css/bootstrap.min.css', __FILE__ ));
-wp_enqueue_style( 'mbr_fontawesome_css', plugins_url( '/css/font-awesome.min.css', __FILE__ ));
-wp_enqueue_style( 'mbr_custom_css', plugins_url( '/css/style.css', __FILE__ ));
-wp_enqueue_script( 'mbr_bootstrap_js', plugins_url( '/js/bootstrap.min.js', __FILE__ ));
-wp_enqueue_script( 'mbr_jquery_js', plugins_url( '/js/jquery.min.js', __FILE__ ));
-wp_enqueue_script( 'mbr_popper_js', plugins_url( '/js/popper.min.js', __FILE__ ));
-wp_enqueue_script( 'mbr_custom_js', plugins_url( '/js/mbr.js', __FILE__ ));
+// Add CSS and JS for this plugin only
+function load_custom_wp_admin_style($hook) {
+    if($hook == 'toplevel_page_mbr-functions-control' || $hook == 'mbr-functions-control_page_sync-file') {
+        wp_enqueue_style( 'mbr_bootstrap_css', plugins_url( '/css/bootstrap.min.css', __FILE__ ));
+        wp_enqueue_style( 'mbr_fontawesome_css', plugins_url( '/css/font-awesome.min.css', __FILE__ ));
+        wp_enqueue_style( 'mbr_custom_css', plugins_url( '/css/style.css', __FILE__ ));
+        wp_enqueue_script( 'mbr_bootstrap_js', plugins_url( '/js/bootstrap.min.js', __FILE__ ));
+        wp_enqueue_script( 'mbr_jquery_js', plugins_url( '/js/jquery.min.js', __FILE__ ));
+        wp_enqueue_script( 'mbr_popper_js', plugins_url( '/js/popper.min.js', __FILE__ ));
+        wp_enqueue_script( 'mbr_custom_js', plugins_url( '/js/mbr.js', __FILE__ ));
+    }
+}
+add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 
 // Create database table mbr_function_control for plugin
 register_activation_hook( __FILE__, 'my_plugin_create_db' );
@@ -224,7 +229,6 @@ function mbr_main_function(){
             </div>
         </div>
 
-
         <!-- Modal Add new -->
         <div class='modal fade' id='mbr_modal' tabindex='-1' role='dialog' aria-hidden='true'>
             <div class='modal-dialog modal-dialog-centered modal-lg' role='document'>
@@ -247,7 +251,7 @@ function mbr_main_function(){
                                 </div>
                             </div>
                             <div class='modal-footer mb-0'>
-                                <input type='submit' class='btn btn-success fa mbr-fa' value='&#xf055; Thêm mới'>
+                                <input type='submit' class='btn btn-primary fa mbr-fa' value='&#xf055; Thêm mới'>
                                 <button type='button' class='btn btn-danger' data-dismiss='modal'><i class="fa fa-times-circle" aria-hidden="true"></i> Hủy bỏ</button>
                             </div>
                         </form>
