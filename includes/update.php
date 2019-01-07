@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require('../../../../wp-load.php');
-header("Location: /wp-admin/admin.php?page=mbr-functions-control");
+$url = "/wp-admin/admin.php?page=mbr-functions-control";
 
 global $wpdb;
 
@@ -186,4 +186,6 @@ if(isset($_POST['collapse_all'])){
         }
     }
 }
+wp_redirect($url);
+exit;
 ?>
