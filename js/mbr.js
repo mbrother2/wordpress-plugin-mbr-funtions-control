@@ -16,19 +16,16 @@ $(document).ready(function(){
         } else {
             active_function = +active_function - 1;
             inactive_function = +inactive_function + 1;
-                }
+        }
 
         $('input[id=mbr_active_function]').val(active_function);
         $('input[id=mbr_inactive_function]').val(inactive_function);
-
-//       console.log(data);
 
         $.ajax({
             type: "POST",
             url: "/wp-content/plugins/mbr-functions-control/includes/on-off.php",
             data: data,
         }).done(function(data) {
-//      console.log(data);
         });
     });
 
@@ -43,7 +40,6 @@ $(document).ready(function(){
             url: "/wp-content/plugins/mbr-functions-control/includes/on-off.php",
             data: data,
         }).done(function(data) {
-      console.log(functionid);
         });
     });
 
@@ -56,4 +52,5 @@ $(document).ready(function(){
         $('input[name=function_id]').val(functionid);
         $('input[name=function_title]').val(functiontitle);
     });
+
 });
