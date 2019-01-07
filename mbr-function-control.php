@@ -47,7 +47,7 @@ function my_plugin_create_db() {
 add_action( 'admin_menu', 'mbr_add_menu_bar' );
 if( !function_exists("mbr_add_menu_bar") ){
     function mbr_add_menu_bar(){
-        add_menu_page( 'MBR functions control', 'MBR functions control', 'manage_options', 'mbr-functions-control', 'mbr_main_function', 'dashicons-media-code', '99' );
+        add_menu_page( 'MBR functions control', 'MBR functions control', 'manage_options', 'mbr-functions-control', 'mbr_main_function', plugins_url( '/mbr.png', __FILE__ ), '99' );
         add_submenu_page( 'mbr-functions-control', 'Sync file', 'Sync file funtions.php', 'manage_options', 'sync-file', 'mbr_sync_file');
     }
 }
@@ -82,7 +82,7 @@ function mbr_main_function(){
     <div class="container">
         <div class="row py-4">
             <div class="col text-center">
-                <h3>MBR functions control v1.0</h3>
+                <h3><img src="<?php echo plugins_url( '/mbr3.png', __FILE__ ); ?>"> MBR functions control v1.0</h3>
             </div>
         </div>
 		<div class="row mx-0">
@@ -167,7 +167,18 @@ function mbr_main_function(){
                         </form>
                     </div>                   
                 </div>
-                <?php } ?>
+                <?php } 
+                else {
+                    $wpdb->update( 
+                        $table_name, 
+                        array(
+                            'same'  => 1
+                        ),
+                        array(
+                            'id' => $function_id
+                        )
+                    );
+                }?>
                 <div class="row">
                     <div class="col-2 col-sm-1 pr-0 mr-0">
                         <label class="switch">
@@ -228,11 +239,11 @@ function mbr_main_function(){
                                 <input type='hidden' name='function_id' value='<?php echo $function_id ?>'>
                                 <label class="col-sm-2 col-form-label bg-light border-right border-bottom text-truncate">Tên function</label>
                                 <div class="col-sm-10 border-bottom px-2">
-                                    <input type="text" class="form-control border-0" name="input1" id="input1">
+                                    <input type="text" class="form-control border-0" name="function_title" id="function_title">
                                 </div>
                                 <label class="col-sm-2 col-form-label bg-light border-right border-bottom text-truncate">Nội dung</label>
                                 <div class="col-sm-10 border-bottom px-2">
-                                    <textarea class="form-control border-0" rows="5" name="input2" id="input2" aria-label="With textarea"></textarea>
+                                    <textarea class="form-control border-0" rows="5" name="function_content" id="function_content" aria-label="With textarea"></textarea>
                                 </div>
                             </div>
                             <div class='modal-footer mb-0'>
@@ -278,6 +289,7 @@ if( !function_exists("mbr_sync_file") ){
     function mbr_sync_file(){
         global $wpdb;
         $table_name = $wpdb->prefix . "mbr_function_control";
+        $total_function = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
 ?>
     <div class="container">
@@ -297,9 +309,19 @@ if( !function_exists("mbr_sync_file") ){
                 </ul>
             </div>
         </div>
+        <?php if($total_function > 0){ ?>
+        <div class="row">
+            <div class="col alert alert-warning">
+                <h5><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> CẢNH BÁO:</h5>
+                <ul>
+                    <li>Đã tồn tại dữ liệu trong cơ sở dữ liệu! Nếu bạn nhấn vào nút đồng bộ, plugin sẽ <b>CHỈ</b> xóa dữ liệu trong bảng mbr_function_control và tạo lại cơ sở dữ liệu cho plugin.</li>
+                </ul>
+            </div>
+        </div>      
+        <?php }?>
         <div class="row">
             <form method='post' action='<?php echo plugins_url('includes/sync_file.php', __FILE__ ); ?>' class='form-container'>
-                <input type='submit' class='btn btn-success mx-2 fa mbr-fa' name='sync_file' value='&#xf021; Đồng bộ'>                
+                <input type='submit' class='btn btn-success fa mbr-fa' name='sync_file' value='&#xf021; Đồng bộ'>                
             </form>
         </div>
     </div>
